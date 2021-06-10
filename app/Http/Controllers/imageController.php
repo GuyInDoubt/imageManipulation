@@ -3,28 +3,43 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\imageModel;   
+use App\Models\imageDt;      
 
 class imageController extends Controller
 {
     public function index(Request $request){
         $file = $request->file("file");
         $name = $file->getClientOriginalName();
+
         $img=\Image::make($file);
         $img->text('Rovae', 120, 100, function($font) {$font->file('Fonts/CVFont.ttf'); $font->size(90);});
-        $img->save(storage_path('app/public/'. $name .'-XXLarge.jpg'), 25);
-        $img=\Image::make($file);
+        $img->resize(700, 700, function ($constraint) {$constraint->aspectRatio(); $constraint->upsize();});
+        $img->save(storage_path('app/public/XXLarge-'. $name .''));
+
+        $img=\Image::make($file)->orientate();
         $img->text('Rovae', 120, 100, function($font) {$font->file('Fonts/CVFont.ttf'); $font->size(90);});
-        $img->save(storage_path('app/public/'. $name .'-XLarge.jpg'), 15);
-        $img=\Image::make($file);
+        $img->resize(600, 600, function ($constraint) {$constraint->aspectRatio(); $constraint->upsize();});
+        $img->save(storage_path('app/public/XLarge-'. $name .''));
+
+        $img=\Image::make($file)->orientate();
         $img->text('Rovae', 120, 100, function($font) {$font->file('Fonts/CVFont.ttf'); $font->size(90);});
-        $img->save(storage_path('app/public/'. $name .'-Large.jpg'), 10);
-        $img=\Image::make($file);
+        $img->resize(500, 500, function ($constraint) {$constraint->aspectRatio(); $constraint->upsize();});
+        $img->save(storage_path('app/public/Large-'. $name .''));
+
+        $img=\Image::make($file)->orientate();
         $img->text('Rovae', 120, 100, function($font) {$font->file('Fonts/CVFont.ttf'); $font->size(90);});
-        $img->save(storage_path('app/public/'. $name .'-Medium.jpg'), 5);
-        $img=\Image::make($file);
+        $img->resize(400, 400, function ($constraint) {$constraint->aspectRatio(); $constraint->upsize();});
+        $img->save(storage_path('app/public/Medium-'. $name .''));
+
+        $img=\Image::make($file)->orientate();
         $img->text('Rovae', 120, 100, function($font) {$font->file('Fonts/CVFont.ttf'); $font->size(90);});
-        $img->save(storage_path('app/public/'. $name .'-Original.jpg'));
+        $img->save(storage_path('app/public/Original-'. $name .''));
+        
+        $imageDt = new imageDt();
+        $imageDt->name = $name; 
+        $imageDt->path = 'storage/app/public/'. $name .'';
+        $imageDt->save();
+
         return back();
     }    
 }
